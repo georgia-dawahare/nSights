@@ -1,0 +1,12 @@
+html,
+body {
+    min-height: 100vh;
+}
+
+.bg-lightBlue {
+    background-color: #C8D5F5;
+}
+
+.height-full {
+    height: 100vh
+}

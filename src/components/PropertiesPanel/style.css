@@ -1,0 +1,8 @@
+#propertiesContainer {
+    /* height: 100%; */
+}
+
+.propertyInput {
+    display: flex;
+    gap: 15px;
+}
