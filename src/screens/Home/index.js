@@ -17,14 +17,14 @@ const Home = () => {
       <Grid container spacing={2}>
         <Grid xs={3} className="height-full">
           <PropertiesPanel experiment={selectedExperiment}/>
-        </Grid>
-        <Grid xs={6} className="height-full">
-          <GraphPanel />
-        </Grid>
-        <Grid xs={3} className="height-full">
-          <FiltersPanel setSelectedExperiment={setExperiment} experiments={data}/>
-        </Grid>
       </Grid>
+      <Grid xs={6} className="height-full">
+        <GraphPanel />
+      </Grid>
+      <Grid xs={3} className="height-full">
+        <FiltersPanel setSelectedExperiment={setExperiment} experiments={data}/>
+      </Grid>
+    </Grid>
     </Container>
   );
 };
