@@ -9,7 +9,9 @@ const Home = () => {
   const [selectedExperiment, setSelectedExperiment] = useState({});
   const [experimentName, setExperimentName] = useState({});
   const [output1, setOutput1] = useState({});
+  const [outputRange1, setOutputRange1] = useState({});
   const [output2, setOutput2] = useState({});
+  const [outputRange2, setOutputRange2] = useState({});
   const [graphType, setGraphType] = useState({});
 
   const setExperiment = (experimentName) => {
@@ -30,6 +32,13 @@ const Home = () => {
             graphType={graphType}
             output1={output1}
             output2={output2}
+            outputRange1={outputRange1}
+            outputRange2={outputRange2}
+            experiments={data}
+            setOutputRange1={setOutputRange1}
+            setOutputRange2={setOutputRange2}
+            setOutput1={setOutput1}
+            setOutput2={setOutput2}
           />
         </Grid>
         <Grid xs={3} className="height-full">
@@ -37,6 +46,8 @@ const Home = () => {
             setSelectedExperiment={setExperiment}
             setOutput1={setOutput1}
             setOutput2={setOutput2}
+            setOutputRange1={setOutputRange1}
+            setOutputRange2={setOutputRange2}
             experiments={data}
             setGraphType={setGraphType}
             output1={output1}

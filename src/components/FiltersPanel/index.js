@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Card, Typography, Slider, Divider } from "@mui/joy";
+import { Card, Button, Typography, Slider, Divider } from "@mui/joy";
 import { Stack, Box } from "@mui/system";
 
 import Dropdown from "../Dropdown";
@@ -26,28 +26,35 @@ const FiltersPanel = ({
   setSelectedExperiment,
   setOutput1,
   setOutput2,
-  setGraphType,
   output1,
   output2,
+  setOutputRange1,
+  setOutputRange2,
+  setGraphType,
 }) => {
   const names = Object.keys(experiments); // Experiment names
   const values = Object.values(experiments); // values of experiments (inputs and outputs)
   const outputtNames = values[0].outputs; // output names
   const outputList = Object.keys(outputtNames); // Since the outputs are the same for each experiment, can use the outputs for the first experiment
 
-  // states to change the value of the sliders
-  const [sliderValue1, setSliderValue1] = useState([0, 100]);
-  const [sliderValue2, setSliderValue2] = useState([0, 100]);
-
   // List of graph types
-  const graphType = ["Line Chart", "Bar Chart", "Scatter Chart"];
+  const graphType = ["Line Chart", "Bar Chart", "Pie Chart"];
+
+  // States used to set range slider
+  const [value1, setValue1] = useState([0, 0]);
+  const [value2, setValue2] = useState([0, 0]);
 
   // functions to update the sliders
   const updateSlider1 = (e, data) => {
-    setSliderValue1(data);
+    setValue1(data);
   };
   const updateSlider2 = (e, data) => {
-    setSliderValue2(data);
+    setValue2(data);
+  };
+
+  const handleFilter = (e) => {
+    setOutputRange1(value1);
+    setOutputRange2(value2);
   };
 
   // Define max range value based on output selected
@@ -115,7 +122,7 @@ const FiltersPanel = ({
             <Box sx={{ width: 268 }}>
               <Slider
                 getAriaLabel={() => "Output range 1"}
-                value={sliderValue1}
+                value={value1}
                 onChange={updateSlider1}
                 valueLabelDisplay="auto"
                 max={range1[1]}
@@ -135,7 +142,7 @@ const FiltersPanel = ({
             <Box sx={{ width: 268 }}>
               <Slider
                 getAriaLabel={() => "Output range 2"}
-                value={sliderValue2}
+                value={value2}
                 onChange={updateSlider2}
                 valueLabelDisplay="auto"
                 max={range2[1]}
@@ -143,6 +150,9 @@ const FiltersPanel = ({
               />
             </Box>
           </Card>
+          <Button size="sm" onClick={handleFilter}>
+            Filter
+          </Button>
         </Stack>
       </Card>
     </Stack>
