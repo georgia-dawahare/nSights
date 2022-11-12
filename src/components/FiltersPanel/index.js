@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Card, Button, Typography, Slider, Divider } from "@mui/joy";
+import { Card, Typography, Slider, Divider } from "@mui/joy";
 import { Stack, Box } from "@mui/system";
 
 import Dropdown from "../Dropdown";
@@ -53,13 +53,11 @@ const FiltersPanel = ({
   // Define max range value based on output selected
   if (typeof output1 === "string" && output1.length !== 0) {
     var range1 = findRange(output1, values);
-    console.log(range1);
   } else {
     range1 = [0, 0];
   }
   if (typeof output2 === "string" && output2.length !== 0) {
     var range2 = findRange(output2, values);
-    console.log(range2);
   } else {
     range2 = [0, 0];
   }
@@ -74,6 +72,7 @@ const FiltersPanel = ({
           Filters
         </Typography>
         <Divider inset="none" />
+        {/* General Filters */}
         <Typography
           level="h4"
           sx={{
@@ -96,7 +95,7 @@ const FiltersPanel = ({
             callback={setGraphType}
           />
         </Stack>
-
+        {/* Filter by output */}
         <Typography
           level="h4"
           sx={{ marginTop: "10px", marginBottom: "10px", fontWeight: "bold" }}
@@ -145,9 +144,6 @@ const FiltersPanel = ({
             </Box>
           </Card>
         </Stack>
-        <Button sx={{ marginTop: "2em" }} onClick={() => {}}>
-          Filter
-        </Button>
       </Card>
     </Stack>
   );

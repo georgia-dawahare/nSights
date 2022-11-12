@@ -1,8 +1,8 @@
 import React from "react";
 import { Chip, Card, Divider, Typography } from "@mui/joy";
 import { Stack } from "@mui/system";
-
 import EqualizerIcon from "@mui/icons-material/Equalizer";
+
 import "./style.css";
 
 function isEmpty(obj) {
