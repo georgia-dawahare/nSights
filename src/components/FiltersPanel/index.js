@@ -1,28 +1,56 @@
-import React from "react";
-import Typography from "@mui/joy/Typography";
-import Button from "@mui/joy/Button";
-
-import Card from "@mui/joy/Card";
-import { Stack } from "@mui/system";
+import React, { useState } from "react";
+import { Card, Button, Typography, Slider, Divider } from "@mui/joy";
+import { Stack, Box } from "@mui/system";
 
 import Dropdown from "../Dropdown";
 import "./style.css";
 
-const FiltersPanel = ({ experiments, setSelectedExperiment }) => {
+function valuetext(value) {
+  return `${value}°C`;
+}
+
+const FiltersPanel = ({
+  experiments,
+  setSelectedExperiment,
+  setOutput1,
+  setOutput2,
+  setGraphType,
+}) => {
   const names = Object.keys(experiments);
+  const values = Object.values(experiments);
+  const outputs = values[0].outputs;
+  const outputList = Object.keys(outputs); // Since the outputs are the same for each experiment, can use the outputs for the first experiment
+
+  const [value1, setValue1] = useState([0, 40]);
+  const [value2, setValue2] = useState([0, 40]);
+
+  const graphType = ["Line Chart", "Bar Chart", "Scatter Chart"];
+
+  const updateRange1 = (e, data) => {
+    setValue1(data);
+  };
+
+  const updateRange2 = (e, data) => {
+    setValue2(data);
+  };
 
   return (
-    <Stack>
-      <Typography
-        level="h5"
-        sx={{ paddingBottom: "10px", textAlign: "center" }}
-      >
-        Filters
-      </Typography>
-      <Card variant="soft">
+    <Stack sx={{ marginTop: "20px" }}>
+      <Card variant="soft" color="primary">
         <Typography
-          level="body1"
-          sx={{ paddingBottom: "10px", textAlign: "center" }}
+          level="h3"
+          sx={{ textAlign: "center", marginBottom: "10px", fontWeight: "bold" }}
+        >
+          Filters
+        </Typography>
+        <Divider inset="none" />
+        <Typography
+          level="h4"
+          sx={{
+            paddingBottom: "10px",
+            marginTop: "10px",
+            fontWiehgt: "bold",
+          }}
         >
           General
         </Typography>
@@ -32,22 +60,55 @@ const FiltersPanel = ({ experiments, setSelectedExperiment }) => {
             options={names}
             callback={setSelectedExperiment}
           />
-          <Dropdown label="Graph Plot" options={[]} />
+          <Dropdown
+            label="Graph Type"
+            options={graphType}
+            callback={setGraphType}
+          />
         </Stack>
 
-        <Typography level="body1" sx={{ textAlign: "center" }}>
+        <Typography
+          level="h4"
+          sx={{ marginTop: "10px", marginBottom: "10px", fontWeight: "bold" }}
+        >
           By Output
         </Typography>
+
         <Stack spacing={2.5}>
-          <Dropdown label="Output 1:" options={[]} />
-          <Dropdown label="Output 2" options={[]} />
+          <Card>
+            <Dropdown
+              label="Output 1:"
+              options={outputList}
+              callback={setOutput1}
+            />
+            <Box sx={{ width: 268 }}>
+              <Slider
+                getAriaLabel={() => "Output range 1"}
+                value={value1}
+                onChange={updateRange1}
+                valueLabelDisplay="auto"
+                getAriaValueText={valuetext}
+              />
+            </Box>
+          </Card>
+          <Card>
+            <Dropdown
+              label="Output 2:"
+              options={outputList}
+              callback={setOutput2}
+            />
+            <Box sx={{ width: 268 }}>
+              <Slider
+                getAriaLabel={() => "Output range 2"}
+                value={value2}
+                onChange={updateRange2}
+                valueLabelDisplay="auto"
+                getAriaValueText={valuetext}
+              />
+            </Box>
+          </Card>
         </Stack>
-        <Button
-          sx={{ marginTop: "2em" }}
-          onClick={() => {
-            console.log("here");
-          }}
-        >
+        <Button sx={{ marginTop: "2em" }} onClick={() => {}}>
           Filter
         </Button>
       </Card>
