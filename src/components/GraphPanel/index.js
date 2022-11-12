@@ -1,36 +1,44 @@
 import React from "react";
+import { Box, Stack } from "@mui/system";
 import { Typography } from "@mui/joy";
-import { Stack, Box } from "@mui/system";
 import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
+  ArcElement,
   BarElement,
+  CategoryScale,
+  Chart as ChartJS,
+  Legend,
+  LinearScale,
+  LineElement,
+  PointElement,
   Title,
   Tooltip,
-  Legend,
-  ArcElement,
 } from "chart.js";
-import { Line, Bar, Pie } from "react-chartjs-2";
+import { Bar, Line, Pie } from "react-chartjs-2";
 
 ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  PointElement,
-  LineElement,
   ArcElement,
+  BarElement,
+  CategoryScale,
+  Legend,
+  LinearScale,
+  LineElement,
+  PointElement,
   Title,
-  Tooltip,
-  Legend
+  Tooltip
 );
 
+// Function to check if given object is empty
 function isEmpty(obj) {
   return Object.keys(obj).length === 0;
 }
 
+// Function to create a line chart using input values
+// Parameters:
+//  inputVals, numberic values of input
+//  inputNames, names of the input
+//  temp, temperature of the given experiment
+//  experimentName, name of given experiment
+// Returns a line graph of given input
 function createInputLineChart(inputVals, inputNames, temp, experimentName) {
   let options = {
     responsive: true,
@@ -64,6 +72,13 @@ function createInputLineChart(inputVals, inputNames, temp, experimentName) {
   return <Line options={options} data={data} />;
 }
 
+// Function to create a line chart using output values
+// Parameters:
+//  outputVals, numberic values of output
+//  outputNames, names of the output
+//  viscosity, viscosity of the given experiment
+//  experimentName, name of given experiment
+// Returns a line graph of given output
 function createOutputLineChart(
   outputVals,
   outputNames,
@@ -127,7 +142,6 @@ function createInputBarChart(inputVals, inputNames, temp, experimentName) {
       },
     ],
   };
-
   return <Bar options={options} data={data} />;
 }
 
@@ -162,7 +176,6 @@ function createOutputBarChart(
       },
     ],
   };
-
   return <Bar options={options} data={data} />;
 }
 
@@ -205,7 +218,6 @@ function createInputPieChart(inputVals, inputNames) {
       },
     ],
   };
-
   return <Pie data={data} />;
 }
 
@@ -248,10 +260,15 @@ function createOutputPieChart(outputVals, outputNames) {
       },
     ],
   };
-
   return <Pie data={data} />;
 }
 
+// Function to find if there are experiments that produce the given output at the given range
+// Parameters:
+//  output, name of the desired output
+//  outputRange, desired range of output
+//  experiments, all experiments (names, inputs, outputs)
+// Return: a list of experiments that produce outputs in desired range
 function findInRange(output, outputRange, experiments) {
   let values = Object.values(experiments);
   let names = Object.keys(experiments);
@@ -272,6 +289,7 @@ function findInRange(output, outputRange, experiments) {
   return inRange;
 }
 
+// Function that renders graphs
 function renderGraph(
   graphType,
   experiment,
@@ -293,12 +311,12 @@ function renderGraph(
 
   // Line chart
   if (graphType === "Line Chart") {
-    // Remove outliers
+    // Remove outliers (displayed in text rather than in the graph)
     let temp = inputVals.pop();
     inputNames.pop();
     let viscosity = outputVals.shift();
     outputNames.shift();
-    // Show input and output for line chart
+    // If no desired output/output ranges are given, then show input and output line charts
     if (isEmpty(output1) && isEmpty(output2)) {
       const inputChart = createInputLineChart(
         inputVals,
@@ -313,48 +331,56 @@ function renderGraph(
         viscosity
       );
       return [inputChart, outputChart];
-      // Show inputs that produce outputs in a given range for line chart
+      // Show inputs that produce specific output in a given range for line chart
+      // BUG: Currently only displays at most 1 out of potentially many results
+      // (currently having trouble with resetting the state)
     } else if (!isEmpty(output1) || !isEmpty(output2)) {
+      // commented out code displays logic that would display all resulting graphs
       // const chartsInRange = [];
-
       if (!isEmpty(output1)) {
         if (!isEmpty(outputRange1)) {
+          // Store list of valid experiments within range
           const inRange = findInRange(output1, outputRange1, experiments);
+          // Loop over all the experiments in range
           for (let i = 0, size = inRange.length; i < size - 1; i++) {
             let currExperiment = inRange[i][1];
-
             let inRangeInputVals = Object.values(currExperiment.inputs);
             let inRangeInputNames = Object.keys(currExperiment.inputs);
 
             // Remove outliers
             let inRangeTemp = inRangeInputVals.pop();
             inRangeInputNames.pop();
+
+            // Generate graph
             const inputChart = createInputLineChart(
               inRangeInputVals,
               inRangeInputNames,
               inRangeTemp,
               inRange[i][0]
             );
-            return inputChart;
+
+            return inputChart; // currently grabs the last valid experiment to display
+            // Append to list of generated charts to display
             // chartsInRange.append(inputChart);
           }
+          // BUG: Attempt to reset state; does not work
           setOutputRange1({});
           setOutput1({});
         }
       }
-
+      // Do the same thing for output 2
       if (!isEmpty(output2)) {
         if (!isEmpty(outputRange2)) {
           const inRange = findInRange(output2, outputRange2, experiments);
           for (let i = 0, size = inRange.length; i < size - 1; i++) {
             let currExperiment = inRange[i][1];
-
             let inRangeInputVals = Object.values(currExperiment.inputs);
             let inRangeInputNames = Object.keys(currExperiment.inputs);
 
             // Remove outliers
             let inRangeTemp = inRangeInputVals.pop();
             inRangeInputNames.pop();
+            // Generate chart
             const inputChart = createInputLineChart(
               inRangeInputVals,
               inRangeInputNames,
@@ -368,6 +394,7 @@ function renderGraph(
           setOutput2({});
         }
       }
+      // Return all charts to display
       // return chartsInRange;
     }
     // Bar chart
@@ -392,22 +419,21 @@ function renderGraph(
         viscosity
       );
       return [inputChart, outputChart];
-      // Show inputs that produce outputs in a given range for bar chart
+      // Show inputs that produce specific output in a given range for bar chart
     } else if (!isEmpty(output1) || !isEmpty(output2)) {
       // const chartsInRange = [];
-
       if (!isEmpty(output1)) {
         if (!isEmpty(outputRange1)) {
           const inRange = findInRange(output1, outputRange1, experiments);
           for (let i = 0, size = inRange.length; i < size - 1; i++) {
             let currExperiment = inRange[i][1];
-
             let inRangeInputVals = Object.values(currExperiment.inputs);
             let inRangeInputNames = Object.keys(currExperiment.inputs);
 
             // Remove outliers
             let inRangeTemp = inRangeInputVals.pop();
             inRangeInputNames.pop();
+            // Generate chart
             const inputChart = createInputBarChart(
               inRangeInputVals,
               inRangeInputNames,
@@ -427,13 +453,13 @@ function renderGraph(
           const inRange = findInRange(output2, outputRange2, experiments);
           for (let i = 0, size = inRange.length; i < size - 1; i++) {
             let currExperiment = inRange[i][1];
-
             let inRangeInputVals = Object.values(currExperiment.inputs);
             let inRangeInputNames = Object.keys(currExperiment.inputs);
 
             // Remove outliers
             let inRangeTemp = inRangeInputVals.pop();
             inRangeInputNames.pop();
+            // Generate chart
             const inputChart = createInputBarChart(
               inRangeInputVals,
               inRangeInputNames,
@@ -455,18 +481,17 @@ function renderGraph(
       const inputChart = createInputPieChart(inputVals, inputNames);
       const outputChart = createOutputPieChart(outputVals, outputNames);
       return [inputChart, outputChart];
+      // Show inputs that produce specific output in a given range for pie chart
     } else if (!isEmpty(output1) || !isEmpty(output2)) {
       // const chartsInRange = [];
-
       if (!isEmpty(output1)) {
         if (!isEmpty(outputRange1)) {
           const inRange = findInRange(output1, outputRange1, experiments);
           for (let i = 0, size = inRange.length; i < size - 1; i++) {
             let currExperiment = inRange[i][1];
-
             let inRangeInputVals = Object.values(currExperiment.inputs);
             let inRangeInputNames = Object.keys(currExperiment.inputs);
-
+            // Generate chart
             const inputChart = createInputPieChart(
               inRangeInputVals,
               inRangeInputNames
@@ -478,22 +503,20 @@ function renderGraph(
           setOutput1({});
         }
       }
-
       if (!isEmpty(output2)) {
         if (!isEmpty(outputRange2)) {
           const inRange = findInRange(output2, outputRange2, experiments);
           for (let i = 0, size = inRange.length; i < size - 1; i++) {
             let currExperiment = inRange[i][1];
-
             let inRangeInputVals = Object.values(currExperiment.inputs);
             let inRangeInputNames = Object.keys(currExperiment.inputs);
-
+            // Generate chart
             const inputChart = createInputPieChart(
               inRangeInputVals,
               inRangeInputNames
             );
-            return inputChart;
             // chartsInRange.append(inputChart);
+            return inputChart;
           }
           setOutputRange2({});
           setOutput2({});
@@ -516,8 +539,7 @@ const GraphPanel = ({
   setOutputRange1,
   setOutputRange2,
 }) => {
-  console.log(outputRange1);
-
+  // Check if user has selected experiment AND graph type, prompt user to select both if not
   if (isEmpty(experiment) || isEmpty(graphType)) {
     return (
       <div className="selectInputText">
@@ -565,3 +587,7 @@ const GraphPanel = ({
 };
 
 export default GraphPanel;
+
+// Modified examples from:
+//  https://react-chartjs-2.netlify.app/examples
+//  https://mui.com/joy-ui/getting-started/overview/

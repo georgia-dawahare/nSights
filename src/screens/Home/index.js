@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Container, Unstable_Grid as Grid } from "@mui/system";
-import { GraphPanel, FiltersPanel, PropertiesPanel } from "../../components";
 
+import { GraphPanel, FiltersPanel, PropertiesPanel } from "../../components";
 import "./style.css";
 import data from "../../data/experimentData.json";
 
@@ -20,6 +20,7 @@ const Home = () => {
   };
 
   return (
+    // Home page generate a grid with 3 panels: Properties, Graph, and Filter
     <Container maxWidth="xl">
       <Grid container spacing={2}>
         <Grid xs={3} className="height-full">

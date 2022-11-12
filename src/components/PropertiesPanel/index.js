@@ -5,11 +5,13 @@ import EqualizerIcon from "@mui/icons-material/Equalizer";
 
 import "./style.css";
 
+// Checks if given object is empty
 function isEmpty(obj) {
   return Object.keys(obj).length === 0;
 }
 
 const PropertiesPanel = ({ experiment }) => {
+  // Check if experiment has been selected, if not, prompt user to select one
   if (isEmpty(experiment)) {
     return (
       <div className="selectInputText">
@@ -22,11 +24,12 @@ const PropertiesPanel = ({ experiment }) => {
       </div>
     );
   }
-
+  // Make each experiment input a PropertyInput object
   const inputs = Object.entries(experiment?.inputs).map((input) => {
     return <PropertyInput key={input} input={input} />;
   });
 
+  // Display a list of inputs or properties of an experiment
   return (
     <Stack sx={{ marginTop: "20px" }}>
       <Card variant="soft" id="propertiesContainer" color="primary">
@@ -49,6 +52,7 @@ const PropertiesPanel = ({ experiment }) => {
   );
 };
 
+// A single input with an icon, input name, and value
 const PropertyInput = ({ input }) => {
   return (
     <div className="propertyInput">
