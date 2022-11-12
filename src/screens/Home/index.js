@@ -39,6 +39,8 @@ const Home = () => {
             setOutput2={setOutput2}
             experiments={data}
             setGraphType={setGraphType}
+            output1={output1}
+            output2={output2}
           />
         </Grid>
       </Grid>

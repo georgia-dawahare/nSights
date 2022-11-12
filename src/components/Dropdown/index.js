@@ -5,7 +5,7 @@ import Select from "@mui/joy/Select";
 import Option from "@mui/joy/Option";
 import "./style.css";
 
-const Dropdown = ({ label, options, callback }) => {
+const Dropdown = ({ label, options, callback, placeholder }) => {
   const optionsComponents = options.map((option) => {
     return (
       <Option key={option} value={option}>
@@ -23,6 +23,7 @@ const Dropdown = ({ label, options, callback }) => {
         {label}
       </FormLabel>
       <Select
+        placeholder={placeholder}
         defaultValue="dog"
         onChange={(e) => callback(e.target.textContent)}
       >
